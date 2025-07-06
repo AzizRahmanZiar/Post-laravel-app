@@ -9,6 +9,8 @@ Route::redirect('/', 'posts');
 
 Route::resource('posts', PostController::class);
 
+Route::get('/{user}/posts', [DashboardController::class, 'userPosts'])->name('posts.user');
+
 Route::middleware('guest')->group(function(){
     Route::view('/register', 'auth.register')->name('register');
     Route::view('/login', 'auth.login')->name('login');

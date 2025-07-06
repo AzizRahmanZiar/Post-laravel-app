@@ -4,7 +4,8 @@
      <h2 class="text-xl text-red-500 font-bold">{{$post->title}}</h2>
 
      <div class="text-gray-500">
-        <span>Posted at {{$post->created_at->diffForHumans()}}</span>
+        <span>Posted at {{$post->created_at->diffForHumans()}} by</span>
+        <a href="{{route('posts.user', $post->user)}}" class="text-blue-500 font-medium">{{$post->user->username}}</a>
      </div>
 
      <div>

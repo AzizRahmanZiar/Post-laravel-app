@@ -3,6 +3,7 @@
         <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create an Account</h1>
 
         <form action="{{route('register')}}" method="post" class="space-y-4">
+
             @csrf
             <!-- Username Field -->
             <div>

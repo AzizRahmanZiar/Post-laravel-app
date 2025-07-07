@@ -1,5 +1,5 @@
-{{-- <x-layout>
-    <h1>Hello {{auth()->user()->username}}</h1>
+<x-layout>
+    <h1>Welcome {{auth()->user()->username}}, you have {{$posts->total()}} posts</h1>
 
     <form action="{{route('posts.store')}}" method="post">
         <h2 class="font-bold mb-4">Create new post</h2>
@@ -7,9 +7,13 @@
 
 
         @if (session('success'))
-            <div>
+
               <x-flashMsg msg="{{session('success')}}"/>
-            </div>
+
+        @elseif (session('delete'))
+
+                <x-flashMsg msg="{{session('delete')}}" class="bg-red-500"/>
+
         @endif
 
         @csrf
@@ -37,16 +41,24 @@
 
     <div class="flex flex-col gap-2">
      @foreach ($posts as $post)
-     <x-postCard :post="$post"/>
+     <x-postCard :post="$post">
+        <a href="{{route('posts.edit', $post)}}" class="bg-green-500 text-white px-2 py-1 text-xs rounded-md">Update</a>
+     <form action="
+     {{route('posts.destroy', $post)}}" method="post">
+    @csrf
+    @method('DELETE')
+        <button class="bg-red-500 text-white px-2 py-1 text-xs rounded-md">Delete</button>
+    </form>
+     </x-postCard>
      @endforeach
-</div>
+    </div>
 
 <div>{{$posts->links()}}</div>
-</x-layout> --}}
+</x-layout>
 
 
 
-<x-layout>
+{{-- <x-layout>
     <div class="space-y-8">
         <div class="flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,4 +137,4 @@
             </div>
         </div>
     </div>
-</x-layout>
+</x-layout> --}}

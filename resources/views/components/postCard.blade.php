@@ -1,4 +1,4 @@
-{{-- @props(['post'])
+@props(['post', 'full' => false])
 
 <div class="bg-slate-100 border p-4 rounded-md m-2 shadow-md">
      <h2 class="text-xl text-red-500 font-bold">{{$post->title}}</h2>
@@ -8,13 +8,24 @@
         <a href="{{route('posts.user', $post->user)}}" class="text-blue-500 font-medium">{{$post->user->username}}</a>
      </div>
 
-     <div>
+    @if ($full)
+        <div>
+            <span class="text-sm">{{$post->body}}</span>
+        </div>
+    @else
+         <div>
         <p class="text-sm">{{Str::words($post->body, 15)}}</p>
+        <a href="{{route('posts.show', $post)}}" class="text-blue-500 ml-2">Read more &rarr;</a>
      </div>
- </div> --}}
+    @endif
+
+    <div class="flex items-center justify-end gap-4 mt-6">
+        {{$slot}}
+    </div>
+ </div>
 
 
- @props(['post'])
+ {{-- @props(['post', 'full' => false])
 
 <article class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition">
     <h2 class="text-xl font-bold text-indigo-700">{{ $post->title }}</h2>
@@ -27,5 +38,11 @@
             {{ $post->user->username }}
         </a>
     </div>
+
+    @if ($full)
+         <p class="mt-3 text-slate-700">{{$post->body}}</p>
+    @else
     <p class="mt-3 text-slate-700">{{ Str::words($post->body, 15) }}</p>
-</article>
+    <a href="{{route('posts.show', $post)}}" class="text-blue-500 ml-2">Read more &rarr;</a>
+    @endif
+</article> --}}

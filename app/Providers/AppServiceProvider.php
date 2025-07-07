@@ -1,24 +1,54 @@
 <?php
 
+// namespace App\Providers;
+
+// use Illuminate\Support\ServiceProvider;
+
+// class AppServiceProvider extends ServiceProvider
+// {
+//     /**
+//      * Register any application services.
+//      */
+//     public function register(): void
+//     {
+//         //
+//     }
+
+//     /**
+//      * Bootstrap any application services.
+//      */
+//     public function boot(): void
+//     {
+//         //
+//     }
+// }
+
+
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\Post;
+use App\Policies\PostPolicy;
 
-class AppServiceProvider extends ServiceProvider
+class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * The policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
      */
-    public function register(): void
-    {
-        //
-    }
+    protected $policies = [
+        Post::class => PostPolicy::class,
+    ];
 
     /**
-     * Bootstrap any application services.
+     * Register any authentication / authorization services.
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
+
+        
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\post;
 
@@ -43,12 +44,22 @@ class PostController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
-        $fields= $request->validate([
+        $request->validate([
             'title' => ['required', 'max:255'],
-            'body' =>['required']
+            'body' =>['required'],
+            'image' => ['nullable', 'file', 'max:4000', 'mimes:webp,png,jpg']
         ]);
 
-        Auth::user()->posts()->create($fields);
+        $path=null;
+        if($request->hasFile('image')){
+            $path=Storage::disk('public')->put('postImages', $request->image);
+        }
+
+        Auth::user()->posts()->create([
+            'title' => $request->title,
+            'body' => $request->body,
+            'image' => $path
+        ]);
 
         return back()->with('success',  'Post created!');
 

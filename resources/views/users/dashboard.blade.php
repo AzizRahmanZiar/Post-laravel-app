@@ -1,7 +1,7 @@
 <x-layout>
     <h1>Welcome {{auth()->user()->username}}, you have {{$posts->total()}} posts</h1>
 
-    <form action="{{route('posts.store')}}" method="post">
+    <form action="{{route('posts.store')}}" method="post" enctype="multipart/form-data">
         <h2 class="font-bold mb-4">Create new post</h2>
 
 
@@ -31,6 +31,14 @@
             <label for="body">Post body</label>
             <textarea name="body" rows="10">{{old('body')}}</textarea>
               @error('body')
+                <p>{{$message}}</p>
+            @enderror
+        </div>
+
+        <div>
+            <label for="image">Cover photo</label>
+            <input type="file" name="image" id="image">
+            @error('image')
                 <p>{{$message}}</p>
             @enderror
         </div>

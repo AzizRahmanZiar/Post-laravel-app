@@ -1,6 +1,15 @@
 @props(['post', 'full' => false])
 
 <div class="bg-slate-100 border p-4 rounded-md m-2 shadow-md">
+
+    <div>
+        @if($post->image)
+        <img src="{{asset('storage/' . $post->image)}}" alt="postImage">
+        @else
+        <img src="{{asset('storage/postImages/flag.jpg')}}" alt="postImage">
+        @endif
+    </div>
+
      <h2 class="text-xl text-red-500 font-bold">{{$post->title}}</h2>
 
      <div class="text-gray-500">

@@ -4,8 +4,6 @@
     <form action="{{route('posts.store')}}" method="post" enctype="multipart/form-data">
         <h2 class="font-bold mb-4">Create new post</h2>
 
-
-
         @if (session('success'))
 
               <x-flashMsg msg="{{session('success')}}"/>
@@ -13,7 +11,6 @@
         @elseif (session('delete'))
 
                 <x-flashMsg msg="{{session('delete')}}" class="bg-red-500"/>
-
         @endif
 
         @csrf

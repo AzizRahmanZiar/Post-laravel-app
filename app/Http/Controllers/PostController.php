@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WelcomeMail;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\post;
@@ -18,7 +20,7 @@ class PostController extends Controller implements HasMiddleware
     public static function middleware() : array
     {
         return [
-            new Middleware('auth', except: ['index', 'show']),
+            new Middleware(['auth', 'verified'], except: ['index', 'show']),
         ];
     }
     /**
@@ -55,11 +57,13 @@ class PostController extends Controller implements HasMiddleware
             $path=Storage::disk('public')->put('postImages', $request->image);
         }
 
-        Auth::user()->posts()->create([
+        $post=Auth::user()->posts()->create([
             'title' => $request->title,
             'body' => $request->body,
             'image' => $path
         ]);
+
+         Mail::to(Auth::user())->send(new WelcomeMail(Auth::user(), $post));
 
         return back()->with('success',  'Post created!');
 
@@ -89,12 +93,26 @@ class PostController extends Controller implements HasMiddleware
     public function update(Request $request, Post $post)
     {
          Gate::authorize('modify', $post);
-         $fields= $request->validate([
+         $request->validate([
             'title' => ['required', 'max:255'],
-            'body' =>['required']
+            'body' =>['required'],
+            'image' => ['nullable', 'file', 'max:4000', 'mimes:webp,png,jpg']
         ]);
 
-        $post->update($fields);
+        $path=$post->image ?? null;
+        if($request->hasFile('image')){
+            if($post->image){
+                Storage::disk('public')->delete($post->image);
+            }
+            $path=Storage::disk('public')->put('postImages', $request->image);
+        }
+
+        $post->update([
+             'title' => $request->title,
+            'body' => $request->body,
+            'image' => $path
+        ]);
+
         return redirect()->route('dashboard')->with('success',  'Post updated!');
 
     }
@@ -105,6 +123,11 @@ class PostController extends Controller implements HasMiddleware
     public function destroy(Post $post)
     {
         Gate::authorize('modify', $post);
+
+        if($post->image){
+            Storage::disk('public')->delete($post->image);
+        }
+
         $post->delete();
         return back()->with('delete', 'Post deleted!');
     }
